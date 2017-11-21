@@ -51,11 +51,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add a marker in Sydney and move the camera
         LatLng sinsa = new LatLng(37.516038, 127.019783);
         mMap.addMarker(new MarkerOptions().position(sinsa).title("Marker in Seoul"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sinsa, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sinsa, 11));
 
         Observable<Data> observable = Observable.create(emitter -> {
            for(Data data :ZoneApi.data){
-               Thread.sleep(1000);
                emitter.onNext(data);
            }
         });
@@ -65,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .subscribe(data ->{
                     LatLng marker = new LatLng(data.getLat(), data.getLng());
                     mMap.addMarker(new MarkerOptions().position(marker).title(data.getZone_name()));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 14));
                 });
     }
 }
