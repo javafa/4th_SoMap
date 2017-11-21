@@ -123,9 +123,9 @@ public class Data {
         this.visit = visit;
     }
 
-    public String getLng ()
+    public double getLng ()
     {
-        return lng;
+        return (lng!=null && !"".equals(lng))? Double.parseDouble(lng):0;
     }
 
     public void setLng (String lng)
@@ -213,9 +213,8 @@ public class Data {
         this.notice = notice;
     }
 
-    public String getLat ()
-    {
-        return lat;
+    public double getLat (){
+        return (lat!=null && !"".equals(lat))? Double.parseDouble(lat):0;
     }
 
     public void setLat (String lat)

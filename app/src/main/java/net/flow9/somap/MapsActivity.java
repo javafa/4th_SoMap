@@ -2,6 +2,8 @@ package net.flow9.somap;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,37 +12,60 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import net.flow9.somap.domain.Data;
+import net.flow9.somap.domain.ZoneApi;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ZoneApi.Callback{
 
     private GoogleMap mMap;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        ZoneApi.getZones(this);
+    }
+
+    public void init(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        progressBar.setVisibility(View.GONE);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng sinsa = new LatLng(37.516038, 127.019783);
+        mMap.addMarker(new MarkerOptions().position(sinsa).title("Marker in Seoul"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sinsa, 14));
+
+        Observable<Data> observable = Observable.create(emitter -> {
+           for(Data data :ZoneApi.data){
+               Thread.sleep(1000);
+               emitter.onNext(data);
+           }
+        });
+
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(data ->{
+                    LatLng marker = new LatLng(data.getLat(), data.getLng());
+                    mMap.addMarker(new MarkerOptions().position(marker).title(data.getZone_name()));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 14));
+                });
     }
 }

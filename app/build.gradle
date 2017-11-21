@@ -20,11 +20,11 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_URL", "\"http://localhost:8080/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.1.195:8080/\""
         }
         release {
             // 키스토어 세팅
-            buildConfigField "String", "SERVER_URL", "\"http://localhost:8080/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.1.195:8080/\""
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

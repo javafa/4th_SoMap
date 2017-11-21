@@ -22,7 +22,7 @@ public class ZoneApi {
     public static List<Data> data;
 
     // Zone 데이터를 가져오는 함수
-    public static void getZones(){
+    public static void getZones(Callback callback){
         // 레트로핏 정의
         Retrofit.Builder builder = new Retrofit.Builder();
         builder.baseUrl(BuildConfig.SERVER_URL);
@@ -36,19 +36,23 @@ public class ZoneApi {
 
         // 4. 데이터 가져오기
         observable.subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 zone -> {
                     if(zone.isSuccess()){
                         data = zone.getData();
+                        callback.init();
                     }
                 }
             );
     }
 
     // 인터페이스 생성
-    interface IZone {
+    public interface IZone {
         @GET("zone")
         Observable<Zone> getData();
+    }
+    public interface Callback {
+        void init();
     }
 }
