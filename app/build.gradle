@@ -12,7 +12,7 @@ android {
     }
     signingConfigs{
         release{
-            storeFile file("C:\\Users\\pc\\.android\\release.jks")
+            storeFile file("../keystore/release.jks")
             storePassword storePw
             keyAlias aliasId
             keyPassword aliasPw
