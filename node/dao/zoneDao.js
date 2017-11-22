@@ -7,8 +7,12 @@ var task = {
             callback(error, items);
         });
     },
-    delete : function(callback){
-
+    selectArea : function(area, callback){
+        var query_str = "select * from crawl_zone where zone_addr like concat(?,'%')"
+        var values = [area]
+        cons.query(query_str, values, function(error, items, field){
+            callback(error, items);
+        });
     }
 };
 
