@@ -52,4 +52,5 @@ dependencies {
     // 구글 맵 클러스터링 유틸리티
     compile 'com.google.maps.android:android-maps-utils:0.4+'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
 }
